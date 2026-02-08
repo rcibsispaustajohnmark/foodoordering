@@ -1,0 +1,472 @@
+<!-- admin.py -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Food Ordering System</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 25px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .header h1 {
+            font-size: 28px;
+            font-weight: 600;
+        }
+        
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .welcome-text {
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        
+        /* Button Styles */
+        .btn {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+        
+        .btn-danger {
+            background: var(--danger);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+        }
+        
+        .btn-success {
+            background: var(--secondary);
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #0da271;
+            transform: translateY(-2px);
+        }
+        
+        .btn-sm {
+            padding: 6px 16px;
+            font-size: 13px;
+        }
+        
+        /* Section Styles */
+        .section {
+            padding: 30px 40px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid var(--light-gray);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        /* Form Styles */
+        .form-inline {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+        
+        .form-input {
+            padding: 12px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            font-size: 15px;
+            transition: all 0.3s;
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        /* Table Styles */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid var(--light-gray);
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            min-width: 600px;
+        }
+        
+        th {
+            background: linear-gradient(135deg, var(--light) 0%, #f1f5f9 100%);
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        td {
+            padding: 16px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        tr:hover {
+            background-color: rgba(79, 70, 229, 0.05);
+        }
+        
+        tr:last-child td {
+            border-bottom: none;
+        }
+        
+        /* Status Badges */
+        .status-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-received {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        /* Action Links */
+        .action-link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            padding: 6px 12px;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+        
+        .action-link:hover {
+            background: rgba(79, 70, 229, 0.1);
+            text-decoration: underline;
+        }
+        
+        .action-link.danger {
+            color: var(--danger);
+        }
+        
+        .action-link.danger:hover {
+            background: rgba(239, 68, 68, 0.1);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 48px;
+            margin-bottom: 16px;
+            opacity: 0.5;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .section {
+                padding: 20px;
+            }
+            
+            .header {
+                padding: 20px;
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .form-inline {
+                flex-direction: column;
+            }
+            
+            .form-input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ Admin Dashboard</h1>
+            <div class="user-info">
+                <span class="welcome-text">Welcome, <strong>{{ request.user.username }}</strong></span>
+                <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-danger">🚪 Logout</button>
+                </form>
+            </div>
+        </div>
+
+        <!-- Orders Section -->
+        <div class="section">
+            <h2 class="section-title">
+                📋 Orders
+                <span class="badge">{{ orders|length }} total</span>
+            </h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Customer</th>
+                            <th>Food Item</th>
+                            <th>Quantity</th>
+                            <th>Status</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for order in orders %}
+                        <tr>
+                            <td>
+                                <strong>{{ order.user.username }}</strong>
+                                <div style="font-size: 12px; color: var(--gray);">{{ order.user.email }}</div>
+                            </td>
+                            <td>{{ order.food_name }}</td>
+                            <td>
+                                <span class="quantity-badge">{{ order.quantity }}</span>
+                            </td>
+                            <td>
+                                <span class="status-badge status-{{ order.status|lower }}">
+                                    {{ order.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if order.status != "RECEIVED" %}
+                                <a href="{% url 'update_order_status' order.id 'RECEIVED' %}" 
+                                   class="action-link">
+                                    ✅ Mark as Received
+                                </a>
+                                {% else %}
+                                <span style="color: var(--gray);">✓ Completed</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="5" class="empty-state">
+                                <div>📭</div>
+                                <p>No orders yet</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Menu Section -->
+        <div class="section">
+            <h2 class="section-title">
+                🍔 Menu Management
+                <span class="badge">{{ foods|length }} items</span>
+            </h2>
+            
+            <form method="POST" action="{% url 'add_food' %}" class="form-inline">
+                {% csrf_token %}
+                <input type="text" name="name" placeholder="Food Name" class="form-input" required>
+                <input type="number" name="price" placeholder="Price" class="form-input" step="0.01" min="0" required>
+                <button type="submit" class="btn btn-primary">➕ Add Food Item</button>
+            </form>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Price</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for food in foods %}
+                        <tr>
+                            <td>
+                                <strong>{{ food.name }}</strong>
+                            </td>
+                            <td>
+                                <span style="font-weight: 600; color: var(--primary);">
+                                    ₱{{ food.price }}
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'delete_food' food.id %}" 
+                                   class="action-link danger"
+                                   onclick="return confirm('Are you sure you want to delete {{ food.name }}?')">
+                                    🗑️ Delete
+                                </a>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="empty-state">
+                                <div>🍽️</div>
+                                <p>No food items yet</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Users Section -->
+        <div class="section">
+            <h2 class="section-title">
+                👥 Users
+                <span class="badge">{{ users|length }} registered</span>
+            </h2>
+            
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Username</th>
+                            <th>Email</th>
+                            <th>Role</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                        <tr>
+                            <td>
+                                <strong>{{ user.username }}</strong>
+                                {% if user.is_staff %}
+                                <span style="font-size: 11px; background: var(--primary); color: white; padding: 2px 6px; border-radius: 10px; margin-left: 5px;">
+                                    Admin
+                                </span>
+                                {% endif %}
+                            </td>
+                            <td>{{ user.email }}</td>
+                            <td>
+                                {% if user.is_staff %}
+                                <span style="color: var(--primary);">Administrator</span>
+                                {% else %}
+                                <span style="color: var(--gray);">Customer</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                {% if not user.is_staff %}
+                                <a href="{% url 'delete_user' user.id %}" 
+                                   class="action-link danger"
+                                   onclick="return confirm('Are you sure you want to delete user {{ user.username }}?')">
+                                    🗑️ Delete
+                                </a>
+                                {% else %}
+                                <span style="color: var(--gray); font-size: 14px;">System Admin</span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="empty-state">
+                                <div>👤</div>
+                                <p>No users found</p>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add dynamic status classes
+        document.addEventListener('DOMContentLoaded', function() {
+            const badges = document.querySelectorAll('.status-badge');
+            badges.forEach(badge => {
+                const status = badge.textContent.trim().toLowerCase();
+                badge.classList.add(`status-${status}`);
+            });
+        });
+    </script>
+</body>
+</html>

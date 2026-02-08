@@ -1,0 +1,314 @@
+<!-- food_detail.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ food_name }} - Details</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        
+        .header h1 {
+            font-size: 36px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .price-tag {
+            font-size: 28px;
+            color: var(--primary);
+            font-weight: 700;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 8px 24px;
+            border-radius: 50px;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        /* Main Content */
+        .main-content {
+            background: var(--light);
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        /* Button Styles */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            padding: 14px 28px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+        
+        /* Recommendations Section */
+        .recommendations {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            border: 2px solid var(--light-gray);
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .recommendation-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: transform 0.2s;
+        }
+        
+        .recommendation-item:hover {
+            transform: translateX(5px);
+            background: #f0f9ff;
+        }
+        
+        .food-info {
+            flex: 1;
+        }
+        
+        .food-name {
+            font-weight: 600;
+            font-size: 18px;
+            color: var(--dark);
+        }
+        
+        .food-price {
+            color: var(--primary);
+            font-weight: 700;
+            font-size: 20px;
+        }
+        
+        .add-to-cart-form {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+        
+        .quantity-input {
+            width: 80px;
+            padding: 10px;
+            border: 2px solid var(--light-gray);
+            border-radius: 8px;
+            text-align: center;
+        }
+        
+        .btn-sm {
+            padding: 10px 20px;
+            font-size: 14px;
+            border-radius: 8px;
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--gray);
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-buttons a {
+            flex: 1;
+            text-decoration: none;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 25px;
+            }
+            
+            .header h1 {
+                font-size: 28px;
+            }
+            
+            .recommendation-item {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .add-to-cart-form {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🍽️ {{ food_name }}</h1>
+            <div class="price-tag">₱{{ price }}</div>
+        </div>
+        
+        <div class="main-content">
+            <form action="{% url 'add_order' %}" method="POST">
+                {% csrf_token %}
+                <input type="hidden" name="food_name" value="{{ food_name }}">
+                
+                <div class="form-group">
+                    <label>Quantity:</label>
+                    <input type="number" name="quantity" value="1" min="1" class="form-input">
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    🛒 Add to Cart
+                </button>
+            </form>
+        </div>
+        
+        <div class="recommendations">
+            <h2 class="section-title">
+                ⭐ Recommended For You
+            </h2>
+            
+            {% for food in recommended_foods %}
+            <div class="recommendation-item">
+                <div class="food-info">
+                    <div class="food-name">{{ food.name }}</div>
+                    <div class="food-price">₱{{ food.price }}</div>
+                </div>
+                
+                <form action="{% url 'add_order' %}" method="POST" class="add-to-cart-form">
+                    {% csrf_token %}
+                    <input type="hidden" name="food_name" value="{{ food.name }}">
+                    <input type="number" name="quantity" value="1" min="1" class="quantity-input">
+                    <button type="submit" class="btn btn-primary btn-sm">➕ Add</button>
+                </form>
+            </div>
+            {% empty %}
+            <div class="empty-state">
+                <div>🌟</div>
+                <p>No recommendations available</p>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="action-buttons">
+            <a href="{% url 'order_summary' %}">
+                <button class="btn btn-primary">
+                    📋 View Cart
+                </button>
+            </a>
+            <a href="{% url 'home' %}">
+                <button class="btn btn-secondary">
+                    ← Back to Menu
+                </button>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

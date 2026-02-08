@@ -1,0 +1,564 @@
+<!-- order_summary.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Cart - Food Ordering System</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --warning: #f59e0b;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        
+        /* Header Styles */
+        .header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 30px 40px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .cart-count {
+            background: rgba(255, 255, 255, 0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+        }
+        
+        /* Success Message */
+        .success-message {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 20px 40px;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+        
+        .success-message h3 {
+            color: #065f46;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .success-message p {
+            color: #047857;
+            margin-bottom: 15px;
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Orders Section */
+        .orders-section {
+            padding: 40px;
+        }
+        
+        .section-title {
+            font-size: 22px;
+            color: var(--dark);
+            margin-bottom: 25px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid var(--light-gray);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        /* Orders List */
+        .orders-list {
+            margin-bottom: 40px;
+        }
+        
+        .order-item {
+            background: var(--light);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary);
+            transition: transform 0.2s;
+        }
+        
+        .order-item.placed {
+            border-left-color: var(--secondary);
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+        }
+        
+        .order-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .food-name {
+            font-size: 20px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .order-quantity {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .placed .order-quantity {
+            background: var(--secondary);
+        }
+        
+        .order-details {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        
+        .order-price {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        .placed .order-price {
+            color: var(--secondary);
+        }
+        
+        .order-status {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+        
+        .status-placed {
+            background: #d1fae5;
+            color: #065f46;
+        }
+        
+        .status-received {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+        
+        /* Action Buttons */
+        .order-actions {
+            margin-top: 15px;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--secondary) 0%, #0da271 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(16, 185, 129, 0.3);
+        }
+        
+        .btn-secondary {
+            background: white;
+            color: var(--primary);
+            border: 2px solid var(--primary);
+        }
+        
+        .btn-secondary:hover {
+            background: var(--light);
+            transform: translateY(-2px);
+        }
+        
+        /* Order Placed Message */
+        .order-placed-message {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #d1fae5;
+            color: #065f46;
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            font-weight: 600;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        /* Total Section */
+        .total-section {
+            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            border-radius: 15px;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .total-label {
+            font-size: 18px;
+            color: var(--gray);
+            margin-bottom: 10px;
+        }
+        
+        .total-amount {
+            font-size: 42px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+        
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 60px 40px;
+        }
+        
+        .empty-icon {
+            font-size: 64px;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        .empty-state h3 {
+            font-size: 24px;
+            color: var(--dark);
+            margin-bottom: 10px;
+        }
+        
+        .empty-state p {
+            color: var(--gray);
+            margin-bottom: 30px;
+        }
+        
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+        
+        .action-buttons a {
+            flex: 1;
+            text-decoration: none;
+        }
+        
+        /* Order Placed Animation */
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .confetti.show {
+            opacity: 1;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .orders-section {
+                padding: 25px;
+            }
+            
+            .header {
+                padding: 25px 20px;
+            }
+            
+            .success-message {
+                margin: 20px 25px;
+            }
+            
+            .order-header, .order-details {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 10px;
+            }
+            
+            .action-buttons {
+                flex-direction: column;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .container {
+                margin: 10px;
+            }
+            
+            .orders-section {
+                padding: 20px;
+            }
+            
+            .success-message {
+                margin: 15px;
+                padding: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>
+                🛒 Your Cart
+                {% if orders %}
+                <span class="cart-count">{{ orders|length }} item{{ orders|pluralize }}</span>
+                {% endif %}
+            </h1>
+        </div>
+        
+        <!-- Success Message for Newly Placed Orders -->
+        {% if request.GET.placed == 'true' %}
+        <div class="success-message">
+            <h3>🎉 Order Successfully Placed!</h3>
+            <p>Your order has been submitted and is now being prepared. You'll receive it soon!</p>
+            <p style="font-size: 14px; opacity: 0.8;">Track your order status below.</p>
+        </div>
+        {% endif %}
+        
+        <div class="orders-section">
+            {% if orders %}
+            <h2 class="section-title">📋 Your Orders</h2>
+            
+            <div class="orders-list">
+                {% for order in orders %}
+                <div class="order-item {% if order.status == 'PLACED' or order.status == 'RECEIVED' %}placed{% endif %}">
+                    <div class="order-header">
+                        <div class="food-name">{{ order.food_name }}</div>
+                        <span class="order-quantity">x {{ order.quantity }}</span>
+                    </div>
+                    
+                    <div class="order-details">
+                        <div class="order-price">₱{{ order.total_price }}</div>
+                        <span class="order-status status-{{ order.status|lower }}">
+                            {{ order.status }}
+                        </span>
+                    </div>
+                    
+                    {% if order.status == "PENDING" %}
+                    <div class="order-actions">
+                        <form action="{% url 'place_order' %}" method="POST" id="placeOrderForm{{ order.id }}">
+                            {% csrf_token %}
+                            <input type="hidden" name="order_id" value="{{ order.id }}">
+                            <button type="submit" class="btn btn-primary" onclick="showOrderPlaced()">
+                                🚀 Place Order
+                            </button>
+                        </form>
+                    </div>
+                    {% elif order.status == "PLACED" %}
+                    <div class="order-placed-message">
+                        <span>✅</span>
+                        Order placed! Waiting for preparation and delivery
+                    </div>
+                    {% elif order.status == "RECEIVED" %}
+                    <div class="order-placed-message">
+                        <span>🚚</span>
+                        Order delivered and received!
+                    </div>
+                    {% endif %}
+                </div>
+                {% endfor %}
+            </div>
+            
+            <div class="total-section">
+                <div class="total-label">Total Amount</div>
+                <div class="total-amount">₱{{ total_price }}</div>
+            </div>
+            
+            {% else %}
+            <div class="empty-state">
+                <div class="empty-icon">🛒</div>
+                <h3>Your cart is empty</h3>
+                <p>Add some delicious food to get started!</p>
+            </div>
+            {% endif %}
+            
+            <div class="action-buttons">
+                <a href="{% url 'home' %}">
+                    <button class="btn btn-secondary" style="width: 100%;">
+                        ← Continue Shopping
+                    </button>
+                </a>
+                
+                {% if orders %}
+                <a href="{% url 'home' %}">
+                    <button class="btn btn-primary" style="width: 100%;">
+                        ➕ Add More Items
+                    </button>
+                </a>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+
+    <!-- Simple Confetti Effect -->
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        // Add status styling
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusElements = document.querySelectorAll('.order-status');
+            statusElements.forEach(element => {
+                const status = element.textContent.trim().toLowerCase();
+                element.classList.add(`status-${status}`);
+            });
+            
+            // Check if we should show success message from URL parameter
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('placed') === 'true') {
+                // Create simple confetti effect
+                createConfetti();
+            }
+        });
+        
+        function showOrderPlaced() {
+            // Show a temporary success message on the button
+            const buttons = document.querySelectorAll('.btn-primary');
+            buttons.forEach(button => {
+                const originalText = button.innerHTML;
+                button.innerHTML = '✅ Order Placed!';
+                button.style.background = 'linear-gradient(135deg, #10b981 0%, #0da271 100%)';
+                button.disabled = true;
+                
+                // Revert after 2 seconds
+                setTimeout(() => {
+                    button.innerHTML = originalText;
+                    button.style.background = '';
+                    button.disabled = false;
+                }, 2000);
+            });
+        }
+        
+        function createConfetti() {
+            const confettiContainer = document.getElementById('confetti');
+            confettiContainer.classList.add('show');
+            
+            // Create confetti elements
+            const colors = ['#4f46e5', '#10b981', '#f59e0b', '#ef4444', '#8b5cf6'];
+            
+            for (let i = 0; i < 50; i++) {
+                const confetti = document.createElement('div');
+                confetti.style.position = 'fixed';
+                confetti.style.width = '10px';
+                confetti.style.height = '10px';
+                confetti.style.background = colors[Math.floor(Math.random() * colors.length)];
+                confetti.style.borderRadius = '50%';
+                confetti.style.left = Math.random() * 100 + 'vw';
+                confetti.style.top = '-20px';
+                confetti.style.opacity = '0.8';
+                confetti.style.zIndex = '1000';
+                confettiContainer.appendChild(confetti);
+                
+                // Animation
+                const animation = confetti.animate([
+                    { transform: 'translateY(0) rotate(0deg)', opacity: 0.8 },
+                    { transform: `translateY(${window.innerHeight + 20}px) rotate(${Math.random() * 360}deg)`, opacity: 0 }
+                ], {
+                    duration: 1000 + Math.random() * 2000,
+                    easing: 'cubic-bezier(0.215, 0.610, 0.355, 1)'
+                });
+                
+                animation.onfinish = () => confetti.remove();
+            }
+            
+            // Hide confetti after animation
+            setTimeout(() => {
+                confettiContainer.classList.remove('show');
+                confettiContainer.innerHTML = '';
+            }, 3000);
+        }
+        
+        // Form submission feedback
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function(e) {
+                const button = this.querySelector('button[type="submit"]');
+                if (button) {
+                    button.innerHTML = '⏳ Processing...';
+                    button.disabled = true;
+                }
+            });
+        });
+    </script>
+</body>
+</html>

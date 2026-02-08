@@ -1,0 +1,291 @@
+<!-- login.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Food Ordering System</title>
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --primary-dark: #4338ca;
+            --secondary: #10b981;
+            --light: #f8fafc;
+            --dark: #1e293b;
+            --gray: #64748b;
+            --light-gray: #e2e8f0;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            color: var(--dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 440px;
+            width: 100%;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo {
+            font-size: 48px;
+            margin-bottom: 10px;
+        }
+        
+        .header h1 {
+            font-size: 32px;
+            color: var(--dark);
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            margin-top: 5px;
+        }
+        
+        /* Card Styles */
+        .card {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+        }
+        
+        /* Form Styles */
+        .form-group {
+            margin-bottom: 24px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+        
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+        
+        /* Button Styles */
+        .btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(79, 70, 229, 0.3);
+        }
+        
+        /* Link Styles */
+        .links {
+            text-align: center;
+            margin-top: 25px;
+        }
+        
+        .link {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .link:hover {
+            background: rgba(79, 70, 229, 0.1);
+            text-decoration: underline;
+        }
+        
+        .back-link {
+            margin-bottom: 20px;
+        }
+        
+        .back-link a {
+            color: var(--gray);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 8px 16px;
+            border-radius: 8px;
+            transition: all 0.2s;
+        }
+        
+        .back-link a:hover {
+            background: var(--light-gray);
+            color: var(--dark);
+        }
+        
+        /* Error Messages */
+        .error-list {
+            background: #fef2f2;
+            border: 2px solid #fecaca;
+            border-radius: 10px;
+            padding: 16px;
+            margin-bottom: 24px;
+            color: #dc2626;
+        }
+        
+        .error-list ul {
+            list-style: none;
+        }
+        
+        .error-list li {
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 480px) {
+            .card {
+                padding: 30px 25px;
+            }
+            
+            .header h1 {
+                font-size: 26px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="back-link">
+            <a href="{% url 'home' %}" class="btn btn-secondary">🏠 Back to Home</a>
+
+        </div>
+        
+        <div class="header">
+            <div class="logo">🍔</div>
+            <h1>Welcome Back</h1>
+            <p class="subtitle">Login to your account</p>
+        </div>
+        
+        <div class="card">
+            {% if form.errors %}
+            <div class="error-list">
+                <ul>
+                    {% for field in form %}
+                        {% for error in field.errors %}
+                            <li>❌ {{ error }}</li>
+                        {% endfor %}
+                    {% endfor %}
+                    {% for error in form.non_field_errors %}
+                        <li>❌ {{ error }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
+            
+            <form method="POST">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_username" class="form-label">Username</label>
+                    <input type="text" 
+                           name="username" 
+                           id="id_username" 
+                           class="form-input" 
+                           placeholder="Enter your username" 
+                           required
+                           {% if form.username.value %}value="{{ form.username.value }}"{% endif %}>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password" class="form-label">Password</label>
+                    <input type="password" 
+                           name="password" 
+                           id="id_password" 
+                           class="form-input" 
+                           placeholder="Enter your password" 
+                           required>
+                </div>
+                
+                <button type="submit" class="btn btn-primary">
+                    🔑 Login
+                </button>
+            </form>
+            
+            <div class="links">
+                <a href="{% url 'register' %}" class="link">
+                    👤 Don't have an account? Register
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add focus effects to form inputs
+        document.addEventListener('DOMContentLoaded', function() {
+            const inputs = document.querySelectorAll('.form-input');
+            
+            inputs.forEach(input => {
+                input.addEventListener('focus', function() {
+                    this.parentElement.classList.add('focused');
+                });
+                
+                input.addEventListener('blur', function() {
+                    this.parentElement.classList.remove('focused');
+                });
+            });
+            
+            // If URL has a 'next' parameter, show a message
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.has('next')) {
+                const nextUrl = urlParams.get('next');
+                if (nextUrl && nextUrl !== '/') {
+                    console.log('Redirecting to:', nextUrl);
+                }
+            }
+        });
+    </script>
+</body>
+</html>
